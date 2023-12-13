@@ -117,6 +117,3 @@ all_ans = function()
     op_vals = optimize(organizeAll(logWage, asvabMat, demoMat, otherCovs, 10,000,rand_start), rand_start, LBFGS(), Optim.Options(g_tol = 1e-5, iterations=100, show_trace=true, show_every=50))
 end
 all_ans()
-
-
-    

@@ -169,6 +169,7 @@ function all_ans()
     ## Estimate w/ MLE & GMM
     alpha_rand = rand(9*3)
     mlogit(alpha_rand, outX, outY)
+    mlogit(alpha_true, outX, outY)
     mlogit_GMM(alpha_rand, outX, outY)
     mle_est = optimize(a -> mlogit(a, outX, outY), alpha_rand, LBFGS(), Optim.Options(g_tol = 1e-5, iterations=100_000, show_trace=true, show_every=50))
     gmm_est = optimize(a -> mlogit_GMM(a, outX, outY), alpha_rand, LBFGS(), Optim.Options(g_tol = 1e-5, iterations=100, show_trace=true, show_every=50))

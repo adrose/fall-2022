@@ -86,11 +86,7 @@ function all_ans()
         loglike = -sum( bigD.*log.(P) )
         return loglike
     end
-    #alpha_zero = zeros(6*size(X,2))
-    #alpha_rand = rand(6*size(X,2))
-    #alpha_true = [.1910213,-.0335262,.5963968,.4165052,-.1698368,-.0359784,1.30684,-.430997,.6894727,-.0104578,.5231634,-1.492475,-2.26748,-.0053001,1.391402,-.9849661,-1.398468,-.0142969,-.0176531,-1.495123,.2454891,-.0067267,-.5382892,-3.78975]
-    alpha_start = alpha_true.*rand(size(alpha_true))
-    println(size(alpha_true))
+    alpha_start = rand(6*size(X,2))
     alpha_hat_optim = optimize(a -> mlogit(a, X, y), alpha_start, LBFGS(), Optim.Options(g_tol = 1e-5, iterations=100_000, show_trace=true, show_every=50))
     alpha_hat_mle = alpha_hat_optim.minimizer
     println(alpha_hat_mle)

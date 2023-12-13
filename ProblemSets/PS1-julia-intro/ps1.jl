@@ -19,8 +19,8 @@ using JLD2, Random, LinearAlgebra, Statistics, CSV, DataFrames, FreqTables, Dist
 ###############
 function q1()
     Random.seed!(1234);
-    A = rand(Uniform(-5,10), 10, 7);
-    B = rand(Normal(-2, 15), 10, 7);
+    A = rand(Uniform(-5,10), 10, 7); ## TR used 15*rand(10,7).-5
+    B = rand(Normal(-2, 15), 10, 7); ## TR used 15*randn(10,7).-2
     C = cat(A[1:5,1:5],B[1:5,end-1:end]; dims=2);
     D = A;
     indiciesLess = (D.<=0);
@@ -28,17 +28,18 @@ function q1()
     lengthA = length(A);
     uniqueD = length(unique(D));
     E = reshape(B, length(B));
+    # Easy way == B[:]
     F = cat(A,B, dims=3);
     F = permutedims(F, [3 1 2]);
     G = kron(B, C);
     #G2 = kron(C,F);
-## Provides the following error:
-#ERROR: MethodError: no method matching kron(::Matrix{Float64}, ::Array{Float64, 3})
-#Closest candidates are:
-#kron(::Any, ::Any, ::Any, ::Any...) at operators.jl:591
-#kron(::AbstractVecOrMat, ::Number) at ~/Documents/julia-1.8.0/share/julia/stdlib/v1.8/LinearAlgebra/src/dense.jl:445
-#kron(::VecOrMat, ::Union{SparseArrays.AbstractSparseMatrixCSC, SparseArrays.SparseVector, Union{Adjoint{var"#s884", var"#s883"}, Transpose{var"#s884", var"#s883"}} where {var"#s884", var"#s883"<:SparseArrays.AbstractSparseMatrixCSC}}) at ~/Documents/julia-1.8.0/share/julia/stdlib/v1.8/SparseArrays/src/linalg.jl:1435
-## Can't compute the kron of a 3d matrix?
+    ## Provides the following error:
+    #ERROR: MethodError: no method matching kron(::Matrix{Float64}, ::Array{Float64, 3})
+    #Closest candidates are:
+    #kron(::Any, ::Any, ::Any, ::Any...) at operators.jl:591
+    #kron(::AbstractVecOrMat, ::Number) at ~/Documents/julia-1.8.0/share/julia/stdlib/v1.8/LinearAlgebra/src/dense.jl:445
+    #kron(::VecOrMat, ::Union{SparseArrays.AbstractSparseMatrixCSC, SparseArrays.SparseVector, Union{Adjoint{var"#s884", var"#s883"}, Transpose{var"#s884", var"#s883"}} where {var"#s884", var"#s883"<:SparseArrays.AbstractSparseMatrixCSC}}) at ~/Documents/julia-1.8.0/share/julia/stdlib/v1.8/SparseArrays/src/linalg.jl:1435
+    ## Can't compute the kron of a 3d matrix?
     save("matrixpractice.jld","A",A,"B",B,"C",C,"D",D,"E",E,"F",F,"G",G);
     save("firstmatrix.jld","A",A,"B",B,"C",C,"D",D);
     CSV.write("Cmatrix.csv",DataFrame(C, :auto));
@@ -68,7 +69,7 @@ function q2(A,B,C)
      if tmpVal <=5 && tmpVal >= -5
          Cprime[i] = tmpVal;
      end
-    end
+    end ##  ineeded to make this a column vector not a matrix!!! -- woops
     ## sans for loop
     indexVals = (C.>=-5) .& (C.<=5);
     Cprime2 = C[indexVals];
@@ -149,7 +150,8 @@ function q4()
         # op 2: returns the product of A-trnaspose Binomial
         # op 3: returns the sum of A + B
         if size(m1)!=size(m2)
-            error("inputs must have the same size.")         end
+            error("inputs must have the same size.")         
+        end
         ret1 = m1.*m2
         ret2 = m1'*m2 
         ret3 = sum(m1+m2)
